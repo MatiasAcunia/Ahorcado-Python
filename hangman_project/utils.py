@@ -12,10 +12,14 @@ def get_random_word():
   words = load_words_from_file("wordlist.txt")
   return random.choice(words)
 
-def validate_input(user_input):
-  user_input = user_input.strip().lower()
-  if len(user_input) != 1 or not user_input.isalpha():
+def validate_input(user_input, guessed_letters):
+  cleaned_input = user_input.strip().lower()
+  if len(cleaned_input) != 1 or not cleaned_input.isalpha():
     print("Entrada inválida. Por favor, ingresa solo una letra.")
     return None
-  return user_input
+
+  if cleaned_input in guessed_letters:
+    print(f"Error: Ya has intentado la letra '{cleaned_input}'. Prueba con otra")
+    return None
+  return cleaned_input
   
