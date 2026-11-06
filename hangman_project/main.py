@@ -1,11 +1,10 @@
 import os
 from game import HangmanGame
-from utils import load_word_from_file, get_random_word, validate_input
+from utils import load_words_from_file, get_random_word, validate_input
 
 def main():
   wordlist_path = os.path.join(os.path.dirname(__file__), "wordlist.txt")
   words = load_words_from_file(wordlist_path)
-
   secret = get_random_word(words)
   game = HangmanGame(secret)
 
@@ -16,13 +15,15 @@ def main():
     print(f"Errores: {game.errors} / {game.max_errors}")
     print(f"Letras intentadas: {', '.join(sorted(game.guessed_letters))}")
 
-    user_input = input("Adivina una letra: ")
-    letter = validate_input(user_input)
+    letter = None
+    while letter is None:
+      user_input = input("Adivina una letra: ")
+      letter = validate_input(user_input, game.guessed_letters)
 
-    if letter:
-      game.guess(letter)
-
-  print("\n-----------------------------------")
+    
+    game.guess(letter)
+    print("\n-----------------------------------")
+  
   if game.is_won():
     print(f"¡Felicitaciones! Has ganado. La palabra era: {game.secret_word}")
   else:
