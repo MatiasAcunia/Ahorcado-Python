@@ -17,20 +17,19 @@ def guess(self, letter):
     return False
   return True
 
-def get_masked_word(self):
+def display_progress(self):
   masked = []
   for char in self.secret_word:
     if char.isalpha():
       if char in self.guessed_letters:
         masked.append(char)
-
       else:
         masked.append("_")
 
     else:
       masked.append(char)
 
-  return "".join(masked)
+  return " ".join(masked)
 
 
 def is_won(self):
