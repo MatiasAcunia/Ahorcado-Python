@@ -8,7 +8,8 @@ def load_word_from_file(filepath):
   except FileNotFoundError:
     return ["python", "ahorcado"]
 
-def get_random_word(words):
+def get_random_word():
+  words = load_words_from_file("wordlist.txt")
   return random.choice(words)
 
 def validate_input(user_input):
