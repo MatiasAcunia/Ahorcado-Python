@@ -17,6 +17,16 @@ def guess(self, letter):
     return False
   return True
 
+def process_guess(self, letter):
+  if letter in self.secret_word:
+    self.guessed_letters.add(letter)
+    return True
+
+  else:
+    self.errors += 1
+    self.guessed_letters.add(letter)
+    return False
+
 def display_progress(self):
   masked = []
   for char in self.secret_word:
