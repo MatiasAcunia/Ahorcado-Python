@@ -12,7 +12,7 @@ def guess(self, letter):
 
   self.guessed_letters.add(letter)
 
-  if letter not in self.sectret_word:
+  if letter not in self.secret_word:
     self.errors += 1
     return False
   return True
