@@ -1,3 +1,7 @@
+import secrets
+import hashlib
+import hmac
+
 class HangmanGame:
   HANGMAN_STAGES = [
     r"""  +---+
@@ -116,4 +120,63 @@ class HangmanGame:
       if  letra.isalpha() and letra not in adivinado:
         palabra = palabra[:i] + "_" + palabra[i+1:]
     return palabra
-    
+
+class Jugador:
+    def __init__(self, nombre, password_hash, salt):
+        self.nombre = nombre
+        self.password_hash = password_hash
+        self.salt = salt
+        self.puntos = 0
+        self.partidas = 0
+        self.victorias = 0
+        self.derrotas = 0
+
+    def verificar_password(self, password):
+      salt = bytes.fromhex(self.salt)
+      hash_guardado = bytes.fromhex(self.password_hash)
+
+      hash_ingresado = hashlib.pbkdf2_hmac(
+        "sha256",
+        password.encode("utf-8"),
+        salt,
+        600_000
+      )
+
+      return hmac.compare_digest(hash_ingresado, hash_guardado)
+
+    def registrar_victoria(self, puntos):
+      self.victorias += 1
+      self.partidas += 1
+      self.puntos += puntos
+
+    def registrar_derrota(self):
+      self.derrotas += 1
+      self.partidas += 1
+
+    def to_dict(self):
+      return {
+        "email": self.email,
+        "nombre": self.nombre,
+        "password_hash": self.password_hash,
+        "salt": self.salt,
+        "puntos": self.puntos,
+        "partidas": self.partidas,
+        "victorias": self.victorias,
+        "derrotas": self.derrotas
+    }
+
+    @classmethod
+    def from_dict(cls, data):
+      jugador = cls(
+        data["email"],
+        data["nombre"],
+        data["password_hash"],
+        data["salt"]
+      )
+
+      jugador.puntos = data["puntos"]
+      jugador.partidas = data["partidas"]
+      jugador.victorias = data["victorias"]
+      jugador.derrotas = data["derrotas"]
+
+      return jugador
