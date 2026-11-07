@@ -11,6 +11,8 @@ def main():
   print("¡Bienvenido al juego del Ahorcado!")
 
   while not game.is_won() and not game.is_lost():
+    os.system("cls" if os.name == "nt" else "clear")
+    
     print(f"\nPalabra: {game.get_masked_word()}")
     print(f"Errores: {game.errors} / {game.max_errors}")
     print(f"Letras intentadas: {', '.join(sorted(game.guessed_letters))}")
@@ -19,6 +21,7 @@ def main():
     while letter is None:
       user_input = input("Adivina una letra: ")
       letter = validate_input(user_input, game.guessed_letters)
+    
 
     
     game.guess(letter)

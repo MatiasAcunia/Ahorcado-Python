@@ -56,7 +56,7 @@ class HangmanGame:
     palabra = self.secret_word
     adivinado = self.guessed_letters
     for i, letra in enumerate(palabra):
-      if letra not in adivinado:
+      if  letra.isalpha() and letra not in adivinado:
         palabra = palabra[:i] + "_" + palabra[i+1:]
     return palabra
     
