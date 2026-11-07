@@ -1,11 +1,11 @@
 import os
 from game import HangmanGame
-from utils import load_words_from_file, get_random_word, validate_input
+from utils import load_word_from_file, get_random_word, validate_input
 
 def main():
   wordlist_path = os.path.join(os.path.dirname(__file__), "wordlist.txt")
-  words = load_words_from_file(wordlist_path)
-  secret = get_random_word(words)
+  words = load_word_from_file(wordlist_path)
+  secret = get_random_word(words) 
   game = HangmanGame(secret)
 
   print("¡Bienvenido al juego del Ahorcado!")
