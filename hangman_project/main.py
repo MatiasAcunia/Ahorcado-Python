@@ -12,7 +12,8 @@ def main():
 
   while not game.is_won() and not game.is_lost():
     os.system("cls" if os.name == "nt" else "clear")
-    
+
+    print(game.HANGMAN_STAGES[game.errors])
     print(f"\nPalabra: {game.get_masked_word()}")
     print(f"Errores: {game.errors} / {game.max_errors}")
     print(f"Letras intentadas: {', '.join(sorted(game.guessed_letters))}")
