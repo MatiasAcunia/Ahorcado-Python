@@ -23,3 +23,12 @@ def validate_input(user_input, guessed_letters):
     return None
   return cleaned_input
   
+def calcular_puntos(palabra, errores):
+    letras = set()
+    for letra in palabra.lower():
+      if letra.isalpha():
+        letras.add(letra)
+    tam = len(letras)
+    if tam == 0:
+      return 0
+    return round(100 * tam / (tam + errores))
