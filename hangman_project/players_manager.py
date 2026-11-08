@@ -21,10 +21,10 @@ def cargar_jugadores():
 def guardar_jugadores(jugadores):
     archivo = Path(__file__).resolve().parent / "players.json"
     datos = {}
-    for email, datos_jugador in datos.items():
+    for email, datos_jugador in jugadores.items():
         datos[email] = datos_jugador.to_dict()
-        with open(archivo, "w", encoding="utf-8") as f:
-            json.dump(datos, f, indent = 4)
+    with open(archivo, "w", encoding="utf-8") as f:
+        json.dump(datos, f, indent=4, ensure_ascii=False)
 
 def registrar_jugador(jugadores, email, nombre, password):
     email = email.strip().lower()

@@ -1,16 +1,26 @@
 import os
+import sys
+from getpass import getpass
+
 from game import HangmanGame
-from game import Jugador
-from utils import load_word_from_file, get_random_word, validate_input
 from players_manager import (
     cargar_jugadores,
     guardar_jugadores,
     registrar_jugador,
     iniciar_sesion,
-    obtener_leaderboard
+    obtener_leaderboard,
 )
-from getpass import getpass
-from utils import calcular_puntos
+from utils import calcular_puntos, get_random_word, load_word_from_file, validate_input
+
+
+def limpiar_pantalla():
+  if sys.stdout.isatty() and (os.name == "nt" or os.getenv("TERM")):
+    os.system("cls" if os.name == "nt" else "clear")
+
+
+def esperar_menu():
+  input("\nPresioná Enter para volver al menú...")
+
 
 def main():
   jugadores = cargar_jugadores()
@@ -18,59 +28,65 @@ def main():
   words = load_word_from_file(wordlist_path)
   jugador_actual = None
 
-  print("¡Bienvenido al juego del Ahorcado!")
   while True:
+    limpiar_pantalla()
+    print("¡Bienvenido al juego del Ahorcado!\n")
     print("1. Registrarse")
     print("2. Iniciar sesión")
     print("3. Ver leaderboard")
     print("4. Jugar")
-    print("0. Salir")
     print("5. Cerrar sesión")
+    print("0. Salir")
 
-    numero = input("Ingresa la opción correspondiente: ")
-    numero = numero.strip()
-    if numero not in ("0", "1", "2", "3", "4"):
-      print("Opción incorrecta\n")
-      os.system("cls" if os.name == "nt" else "clear")
+    numero = input("\nIngresá la opción correspondiente: ").strip()
+    if numero not in ("0", "1", "2", "3", "4", "5"):
+      print("\nOpción incorrecta. Elegí una opción del menú.")
+      esperar_menu()
       continue
     elif numero == "0":
+      print("\n¡Hasta la próxima!")
       break
     elif numero == "1":
-      email = input("Inserte su email: \n")
-      nombre = input("Inserte su nombre: \n")
-      password = getpass("Inserte su contraseña: \n")
-      validacion = registrar_jugador(jugadores, email, nombre , password)
+      email = input("\nIngresá tu email: ")
+      nombre = input("Ingresá tu nombre: ")
+      password = getpass("Ingresá tu contraseña: ")
+      validacion = registrar_jugador(jugadores, email, nombre, password)
       if validacion:
-        print("Exitoso\n")
+        print("\n¡Registro exitoso! Ya podés iniciar sesión.")
       else:
-        print("Email ya ingresado\n")
+        print("\nEse email ya está registrado.")
     elif numero == "2":
       if jugador_actual is None:
-        email = input("Inserte su email: \n")
-        password = getpass("Inserte su contraseña: \n")
+        email = input("\nIngresá tu email: ")
+        password = getpass("Ingresá tu contraseña: ")
         jugador_actual = iniciar_sesion(jugadores, email, password)
-        if jugador_actual != None:
-          print("Inicio de sesión exitoso: \n")
+        if jugador_actual is not None:
+          print(f"\n¡Sesión iniciada! Bienvenido, {jugador_actual.nombre}.")
         else:
-          print("Inicio de sesión defectuoso: \n")
+          print("\nEmail o contraseña incorrectos.")
       else:
-        print("Ya hay una sesión inciada. Cerrala primero.")
+        print("\nYa hay una sesión iniciada. Cerrala primero.")
+        esperar_menu()
         continue
     elif numero == "3":
       ranking = obtener_leaderboard(jugadores)
+      print("\n=== LEADERBOARD ===")
+      if not ranking:
+        print("Todavía no hay jugadores registrados.")
       for posicion, jugador in enumerate(ranking, start=1):
         print(f"{posicion}. {jugador.nombre} - {jugador.puntos} puntos")
     elif numero == "4":
       if jugador_actual is None:
-        print("Debes iniciar sesión para jugar.\n")
+        print("\nDebés iniciar sesión para jugar.")
+        esperar_menu()
         continue
       while True:
 
-        secret = get_random_word(words) 
+        secret = get_random_word(words)
         game = HangmanGame(secret)
 
         while not game.is_won() and not game.is_lost():
-          os.system("cls" if os.name == "nt" else "clear")
+          limpiar_pantalla()
 
           print(game.HANGMAN_STAGES[game.errors])
           print(f"\nPalabra: {game.get_masked_word()}")
@@ -79,34 +95,35 @@ def main():
 
           letter = None
           while letter is None:
-            user_input = input("Adivina una letra: ")
+            user_input = input("Adiviná una letra: ")
             letter = validate_input(user_input, game.guessed_letters)
-          
-
-          
           game.guess(letter)
-          print("\n-----------------------------------")
-        
+        limpiar_pantalla()
+        print(game.HANGMAN_STAGES[game.errors])
         if game.is_won():
           print(f"¡Felicitaciones! Has ganado. La palabra era: {game.secret_word}")
           puntos = calcular_puntos(game.secret_word, game.errors)
           jugador_actual.registrar_victoria(puntos)
-          guardar_jugadores(jugadores)
+          print(f"Sumaste {puntos} puntos.")
         else:
           print(f"¡Te has quedado sin intentos! Has perdido. La palabra era: {game.secret_word}")
           jugador_actual.registrar_derrota()
-          guardar_jugadores(jugadores)
+        guardar_jugadores(jugadores)
         print("-----------------------------------")
 
-        respuesta = input("¿Querés volver a jugar? (con el mismo jugador) (s/n): ").strip().lower()
+        respuesta = input("¿Querés volver a jugar? (s/n): ").strip().lower()
 
         if respuesta != "s":
-            break
+          break
     elif numero == "5":
       if jugador_actual is None:
-        print("No hay ninguna sesión iniciada")
+        print("\nNo hay ninguna sesión iniciada.")
       else:
         jugador_actual = None
-        print("Sesión cerrada correctamente")
+        print("\nSesión cerrada correctamente.")
+    esperar_menu()
+
+
 if __name__ == "__main__":
   main()
+

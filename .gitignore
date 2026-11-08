@@ -1,0 +1,3 @@
+__pycache__/
+*.py[cod]
+hangman_project/players.json

@@ -1,4 +1,3 @@
-import secrets
 import hashlib
 import hmac
 
@@ -122,7 +121,8 @@ class HangmanGame:
     return palabra
 
 class Jugador:
-    def __init__(self, nombre, password_hash, salt):
+    def __init__(self, email, nombre, password_hash, salt):
+        self.email = email.strip().lower()
         self.nombre = nombre
         self.password_hash = password_hash
         self.salt = salt
@@ -180,3 +180,4 @@ class Jugador:
       jugador.derrotas = data["derrotas"]
 
       return jugador
+
