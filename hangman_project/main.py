@@ -74,7 +74,14 @@ def main():
       if not ranking:
         print("Todavía no hay jugadores registrados.")
       for posicion, jugador in enumerate(ranking, start=1):
-        print(f"{posicion}. {jugador.nombre} - {jugador.puntos} puntos")
+        partidas = jugador.victorias + jugador.derrotas
+
+        print(f"{posicion}. {jugador.nombre}")
+        print(f"   Puntos: {jugador.puntos}")
+        print(f"   Partidas: {partidas}")
+        print(f"   Victorias: {jugador.victorias}")
+        print(f"   Derrotas: {jugador.derrotas}\n")
+        
     elif numero == "4":
       if jugador_actual is None:
         print("\nDebés iniciar sesión para jugar.")
